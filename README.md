@@ -27,7 +27,7 @@ Verificado no código-fonte do upstream (`epson_print_conf.py`):
     ...
 ```
 
-A L395 é um alias do ET-2600 e tem parâmetros próprios de leitura e reset. Ela **não** consta na lista de "Known incompatible models" do README (modelos cujo firmware bloqueou o acesso à EEPROM por SNMP, como L3250, L3260 e ET-2800). Só a leitura real da impressora confirma isso no seu firmware, e o passo 3 abaixo faz essa leitura sem alterar nada.
+A L395 é um alias do ET-2600 e tem parâmetros próprios de leitura e reset. Ela **não** consta na lista de "Known incompatible models" do README (modelos cujo firmware bloqueou o acesso à EEPROM por SNMP, como L3250, L3260 e ET-2800). Só a leitura real da impressora confirma isso no seu firmware, e o `reset.sh` faz essa leitura sem alterar nada antes de pedir confirmação.
 
 ## Uso (2 comandos)
 
@@ -71,4 +71,4 @@ O backup traz os valores originais dos endereços 24, 25, 30, 28, 29 e 46. Para 
 
 ## English summary
 
-Scripts and notes to reset the **waste ink pad counter** on an **Epson L395** from macOS (Apple Silicon), over the network via SNMP, using [`Ircama/epson_print_conf`](https://github.com/Ircama/epson_print_conf) pinned to commit `c93100c`. The L395 is defined there as an alias of the ET-2600. Tested on a Mac mini M4 with firmware `RY13K3`: waste counter went from 100.02% to normal, and the printer returned to "Idle (ready to print)" after a power cycle. Run `setup.sh`, `find-printer.sh`, `status.sh`, then `reset-waste-ink.sh`. This does **not** clean the physical pads: use at your own risk.
+Scripts and notes to reset the **waste ink pad counter** on an **Epson L395** from macOS (Apple Silicon), over the network via SNMP, using [`Ircama/epson_print_conf`](https://github.com/Ircama/epson_print_conf) pinned to commit `c93100c`. The L395 is defined there as an alias of the ET-2600. Tested on a Mac mini M4 with firmware `RY13K3`: waste counter went from 100.02% to normal, and the printer returned to "Idle (ready to print)" after a power cycle. Just run `./reset.sh` (it installs, finds the printer, reads the counter, backs up, asks for confirmation, then resets). This does **not** clean the physical pads: use at your own risk.
