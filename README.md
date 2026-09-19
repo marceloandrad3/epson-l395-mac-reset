@@ -29,23 +29,31 @@ Verificado no código-fonte do upstream (`epson_print_conf.py`):
 
 A L395 é um alias do ET-2600 e tem parâmetros próprios de leitura e reset. Ela **não** consta na lista de "Known incompatible models" do README (modelos cujo firmware bloqueou o acesso à EEPROM por SNMP, como L3250, L3260 e ET-2800). Só a leitura real da impressora confirma isso no seu firmware, e o passo 3 abaixo faz essa leitura sem alterar nada.
 
-## Uso
+## Uso (2 comandos)
 
-Requisitos: macOS com `git` e `python3` (os do Xcode Command Line Tools servem).
+Abra o **Terminal** no Mac, com a impressora **ligada e no mesmo Wi-Fi**, e cole:
 
 ```bash
 git clone https://github.com/marceloandrad3/epson-l395-mac-reset
-cd epson-l395-mac-reset
-
-./scripts/setup.sh                 # 1. clona o upstream num commit fixo e instala as dependências num venv
-./scripts/find-printer.sh          # 2. descobre o IP da impressora via Bonjour (somente leitura)
-./scripts/status.sh <IP>           # 3. lê status e contador (somente leitura). Confirma se o seu firmware responde
-./scripts/reset-waste-ink.sh <IP>  # 4. salva backup, pede confirmação e zera o contador (ESCREVE na EEPROM)
+cd epson-l395-mac-reset && ./reset.sh
 ```
 
-Se o passo 3 não devolver `main_waste`, **pare**: o seu firmware provavelmente bloqueou o SNMP e o passo 4 não vai funcionar.
+O `reset.sh` faz tudo sozinho: instala, procura a impressora na rede, lê o contador (somente leitura) e mostra o resultado. **Antes de escrever qualquer coisa ele salva um backup e pede que você digite `SIM`.**
 
-O passo 4 salva a leitura atual dos endereços da EEPROM em `backups/<data-hora>/` e só escreve depois de você digitar `SIM`. Depois do reset, **desligue a impressora, espere ~10 s e ligue de novo**: o painel pode continuar mostrando o erro até reiniciar.
+- Se o Mac pedir para instalar as "Command Line Developer Tools", aceite, espere terminar e rode `./reset.sh` de novo.
+- Se ele não achar a impressora, use o IP dela (painel do roteador): `./reset.sh 192.168.x.x`.
+- Se ele disser que a impressora **não devolveu o contador**, pare: o firmware provavelmente bloqueou o SNMP e o reset não vai funcionar.
+- Depois do reset, **desligue a impressora, espere ~10 s e ligue de novo**: o painel pode continuar mostrando o erro até reiniciar.
+- Os backups ficam em `backups/<data-hora>/`.
+
+### Passo a passo manual (opcional)
+
+```bash
+./scripts/setup.sh                 # instala o upstream num commit fixo, num venv
+./scripts/find-printer.sh          # descobre nome e IP via Bonjour (somente leitura)
+./scripts/status.sh <IP>           # lê status e contador (somente leitura)
+./scripts/reset-waste-ink.sh <IP>  # backup, confirmação e reset (ESCREVE na EEPROM)
+```
 
 Para outro modelo: `MODEL=<nome> ./scripts/status.sh <IP>`. Só a L395 foi testada, e os endereços do reset (`ADDRS`) são os dela.
 
