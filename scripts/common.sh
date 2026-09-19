@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 # Variáveis compartilhadas pelos scripts.
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-UPSTREAM_DIR="$ROOT/epson_print_conf"
-UPSTREAM_URL="https://github.com/Ircama/epson_print_conf"
-# Commit do upstream em que o fluxo foi testado (L395, firmware RY13K3).
+# Onde ficam o upstream, o Python e os backups (o app do macOS troca isto por ~/Library/Application Support).
+DATA_DIR="${DATA_DIR:-$ROOT}"
+UPSTREAM_DIR="$DATA_DIR/epson_print_conf"
+BACKUP_DIR="$DATA_DIR/backups"
+UV_DIR="$DATA_DIR/.uv"
+UPSTREAM_REPO="Ircama/epson_print_conf"
+# Commit do upstream em que o fluxo foi testado (L395, firmware RY13K3, Python 3.13).
 UPSTREAM_COMMIT="c93100c"
+PYTHON_VERSION="3.13"
 MODEL="${MODEL:-L395}"
 # Endereços da EEPROM alterados pelo reset da L395 (raw_waste_reset do upstream).
 ADDRS="${ADDRS:-24,25,30,28,29,46}"

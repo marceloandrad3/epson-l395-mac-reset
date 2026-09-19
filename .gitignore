@@ -1,3 +1,5 @@
 backups/
 epson_print_conf/
+.uv/
 .venv/
+dist/
